@@ -1,0 +1,9 @@
+Someone should work on the actual website + frontend
+
+Someone should work on setting up the database remotely
+
+Someone should work on code to regularly pull info
+from Amazon and put it in a database
+
+Someone should work on code to take parameters and use elastisearch
+to search the database, then send it to the frontend
