@@ -22,6 +22,15 @@ services:
     depends_on:
       - elasticsearch
 
+  website:
+    container_name: website
+    build:
+      context: ./website
+    ports:
+      - 80:80
+    networks:
+      - money-net
+
 networks:
   money-net:
     driver: bridge
