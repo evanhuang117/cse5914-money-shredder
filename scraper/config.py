@@ -6,8 +6,4 @@ from dotenv import load_dotenv
 load_dotenv()
 
 user_agent = os.getenv("USER_AGENT")
-
-search_string = ""
-post_update_interval_seconds = 5
-search_result_limit = 30
-
+etsy_api_key = os.getenv("ETSY_API_KEY")

@@ -1,5 +1,5 @@
 from elasticsearch.exceptions import ConnectionError
-from elasticsearch import AsyncElasticsearch, Elasticsearch
+from elasticsearch import AsyncElasticsearch
 from elasticsearch.helpers import async_bulk
 import asyncio
 import aiohttp
@@ -12,9 +12,8 @@ async def update_elasticsearch(session):
     async_bulk(es, get_listings(session))
 
 
-async def get_listings(session, params={'limit': 100, 'offset': 0}, search_string=""):
-    headers = {'User-Agent': user_agent}
-    async with session.get(f"https://openapi.etsy.com/v3/application/listings/active", params=params) as response:
+async def get_listings(session, params={'limit': 100, 'offset': 0}, search_string="", headers={'User-Agent': user_agent, 'x-api-key': etsy_api_key}):
+    async with session.get(f"https://openapi.etsy.com/v3/application/listings/active", params=params, headers=headers) as response:
         if (response.status != 200):
             raise StopAsyncIteration()
         page = await response.json()
@@ -33,7 +32,7 @@ async def do_stuff_periodically(interval, periodic_function):
 
 
 if __name__ == '__main__':
-    es = Elasticsearch(hosts=[{'host': 'elasticsearch',
+    es = AsyncElasticsearch(hosts=[{'host': 'elasticsearch',
                                'port': 9200,
                                'scheme': 'http'}], retry_on_timeout=True)
     for _ in range(100):
