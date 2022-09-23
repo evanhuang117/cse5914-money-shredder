@@ -1,4 +1,4 @@
-const utils = require("./utils");
+// const utils = require("./utils");
 
 const express = require("express");
 const app = express();
@@ -13,6 +13,8 @@ const corsOptions ={
 }
 
 
+
+
 app.use(cors(corsOptions));
 
 // set access port
@@ -21,42 +23,158 @@ app.listen(port, () => {
   console.log(`RUN http://localhost:${port}`);
 });
 
-// default display
-app.get('/', (req, res) => {
-    res.send('Hello World!');
-  });
+'use strict'
 
-// set access API
-app.get("/item_query", function(req, res) {
-    const result = db.query('select * from Item');
-    console.log('data: ', result);
-    return res.send(result)
+const {Client} = require('@elastic/elasticsearch')
+
+const client = new Client({ node: 'https://localhost:9200/',
+                         auth: {
+                                username: 'elastic',
+                                password: 'Diyme7Yz_d2Rs*L4IVud'
+                              },
+                          tls: {
+                                rejectUnauthorized: false
+ },})
+
+// elastic
+// Diyme7Yz_d2Rs*L4IVud
+
+
+app.get('/search_by_price', (req, res) => {
+
+  // var quote = req.body.quote;
+  // var gtr = req.body.gtr;
+  // var lte = req.body.lte;
+
+	async function run () {
+
+	const result = await client.search(
+      {
+        index: 'ebay',
+        from: 0,
+        body: {
+          query: {
+            range: {
+            	price : {
+		          gte: 100,
+		          lte: 1000,
+              boost: 1.0
+            	},
+            },
+          },
+        },
+      },
+      {
+        ignore: [404],
+        maxRetries: 3,
+      }
+    );
+
+	  console.log(result.hits.hits);
+    console.log("end");
+	  const log_st_qu = result.hits.hits[0]['_source']['product'];
+	  const log_st_cha = result.hits.hits[0]['_source']['price'];
+	  res.send(log_st_qu + log_st_cha);
+
+	}
+  run();
+
 });
 
 
-app.post("/depost_order", function(req, res) {
-  var names = req.body.names;
-  var quantity = req.body.quantity;
-  var user_uid = req.body.user_uid;
+app.get('/search_by_keyword', (req, res) => {
 
-  order_wait_name.push(names);
-  order_wait_quantity.push(quantity);
+  var quote = 'computer';
 
-  const uid_exist_flag = utils.check_uid(user_uid);
-  if (uid_exist_flag == false){
-    utils.set_up_user_order_table(user_uid);
-  }
-  exist_user_order = utils.check_user_order(user_uid);
+	async function run () {
 
-  names.forEach((id_, index) => {
-    const quan = quantity[index];
-    var update_oder = quan + exist_user_order[id_];
-    const result1 = db.query(`UPDATE Item_order SET quantity = ${update_oder} WHERE Id = ${id_} AND customerId = '${user_uid}';`);
-    // console.log('depost_order 1: ', result1);
-  });
+	const result = await client.search(
+      {
+        index: 'ebay',
+        from: 0,
+        body: {
+          query: {
+            multi_match: {
+              query: quote,
+              fields: ["product"]
+            },
+          },
+        },
+      },
+      {
+        ignore: [404],
+        maxRetries: 3,
+      }
+    );
 
-  console.log('order_wait_name ', order_wait_name);
-  console.log('order_wait_quantity: ', order_wait_quantity);
-  return res.send('')
+	  console.log(result.hits.hits);
+	  const log_st_qu = result.hits.hits[0]['_source']['product'];
+	  const log_st_cha = result.hits.hits[0]['_source']['price'];
+	  res.send(log_st_qu + log_st_cha);
+
+	}
+  run();
 
 });
+
+
+app.get('/es', (req, res) => {
+
+	const products = ["soap", "computer", "bike",  "moniter", "mouse", "phone", "keyborad", "shoes"];
+	const prices = [200, 500, 100, 200, 20, 1000, 100, 50];
+
+	async function run () {
+	  // Let's start by indexing some data
+
+		let i = 0;
+		while (i < products.length) {
+			  await client.index({
+			    index: 'ebay',
+			    document: {
+			      product: products[i],
+			      price: prices[i]
+			    }
+			  })
+		    i++;
+		}
+
+		await client.indices.refresh({ index: 'ebay' })
+
+		// Let's search!
+		const result= await client.search({
+				index: 'ebay',
+				query: { match: { product: 'soap' }}
+		})
+
+		console.log(result.hits.hits);
+		const log_st_qu = result.hits.hits[0]['_source']['product'];
+		const log_st_cha = result.hits.hits[0]['_source']['price'];
+		res.send(log_st_qu + log_st_cha);
+}
+
+run();
+
+});
+
+
+
+// app.get('/update_data', (req, res) => {
+
+//   var website = req.body.website;
+//   var n_product = req.body.character;
+//   var n_price = req.body.price;
+
+//  async function run () {
+//    await client.index({
+//      index: website,
+//      document: {
+//        product: n_product,
+//        price: n_price
+//      }
+//    })
+
+//    await client.indices.refresh({ index: 'game-of-thrones' })
+//  }
+
+//   run();
+// });
