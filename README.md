@@ -5,8 +5,11 @@
 
 `docker compose up -d`
 
-### Rebuilding from scratch
+### Rebuilding all containers from scratch
 
 `make`
 
+### Rebuilding a single service from scratch
+
+`docker compose up -d --build your_service_name`
 The website can be visited at http://localhost
