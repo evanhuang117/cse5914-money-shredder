@@ -82,6 +82,43 @@ app.get('/search_by_price', (req, res) => {
 });
 
 
+
+app.get('/search_by_type', (req, res) => {
+
+  var quote = 'c2';
+
+  async function run () {
+
+  const result = await client.search(
+      {
+        index: 'ebay',
+        from: 0,
+        body: {
+          query: {
+            multi_match: {
+              query: quote,
+              fields: ["category"]
+            },
+          },
+        },
+      },
+      {
+        ignore: [404],
+        maxRetries: 3,
+      }
+    );
+
+    console.log(result.hits.hits);
+    const log_st_qu = result.hits.hits[0]['_source']['product'];
+    const log_st_cha = result.hits.hits[0]['_source']['price'];
+    res.send(log_st_qu + log_st_cha);
+
+  }
+  run();
+
+});
+
+
 app.get('/search_by_keyword', (req, res) => {
 
   var quote = 'computer';
@@ -122,6 +159,7 @@ app.get('/es', (req, res) => {
 
 	const products = ["soap", "computer", "bike",  "moniter", "mouse", "phone", "keyborad", "shoes"];
 	const prices = [200, 500, 100, 200, 20, 1000, 100, 50];
+  const category = ['c1', 'c1', 'c1', 'c1', 'c2', 'c2', 'c2', 'c2'];
 
 	async function run () {
 	  // Let's start by indexing some data
@@ -132,7 +170,8 @@ app.get('/es', (req, res) => {
 			    index: 'ebay',
 			    document: {
 			      product: products[i],
-			      price: prices[i]
+			      price: prices[i],
+            category: category[i]
 			    }
 			  })
 		    i++;
@@ -141,10 +180,54 @@ app.get('/es', (req, res) => {
 		await client.indices.refresh({ index: 'ebay' })
 
 		// Let's search!
-		const result= await client.search({
-				index: 'ebay',
-				query: { match: { product: 'soap' }}
-		})
+		// const result= await client.search({
+		// 		index: 'ebay',
+		// 		query: { match: { product: 'soap' }}
+		// })
+
+
+    const result = await client.search({
+        index: 'ebay',
+        query: {
+            dis_max: {
+              queries: [
+                {
+                  match: {
+                    product: 'soap'
+                  }
+                },
+                {
+                  match: {
+                    category: 'c1'
+                  }
+                }
+              ],
+              tie_breaker: 0.3
+            }
+        }
+    })
+
+    const result = await client.search({
+        index: 'ebay',
+        query: {
+            dis_max: {
+              queries: [
+                {
+                  match: {
+                    product: 'soap'
+                  }
+                },
+                {
+                  match: {
+                    category: 'c2'
+                  }
+                }
+              ],
+              tie_breaker: 0.3
+            }
+        }
+    })
+
 
 		console.log(result.hits.hits);
 		const log_st_qu = result.hits.hits[0]['_source']['product'];
@@ -156,25 +239,44 @@ run();
 
 });
 
+// must search
 
 
-// app.get('/update_data', (req, res) => {
+    // const response = await client.search({
+    //     index: 'ebay',
+    //     query: {
+    //       bool: {
+    //         must: {
+    //           match_all: {}
+    //         },
+    //         filter: {
+    //           term: {
+    //             status: 'active'
+    //           }
+    //         }
+    //       }
+    //     }
+    // })
 
-//   var website = req.body.website;
-//   var n_product = req.body.character;
-//   var n_price = req.body.price;
 
-//  async function run () {
-//    await client.index({
-//      index: website,
-//      document: {
-//        product: n_product,
-//        price: n_price
-//      }
-//    })
-
-//    await client.indices.refresh({ index: 'game-of-thrones' })
-//  }
-
-//   run();
-// });
+// multiple condition search
+    // const result = await client.search({
+    //     index: 'ebay',
+    //     query: {
+    //         dis_max: {
+    //           queries: [
+    //             {
+    //               match: {
+    //                 product: 'soap'
+    //               }
+    //             },
+    //             {
+    //               match: {
+    //                 category: 'c1'
+    //               }
+    //             }
+    //           ],
+    //           tie_breaker: 0.3
+    //         }
+    //     }
+    // })

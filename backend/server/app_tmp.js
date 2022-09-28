@@ -13,6 +13,8 @@ const corsOptions ={
 }
 
 
+
+
 app.use(cors(corsOptions));
 
 // set access port
@@ -24,80 +26,130 @@ app.listen(port, () => {
 'use strict'
 
 const {Client} = require('@elastic/elasticsearch')
-const client = new Client({ node: 'http://localhost:9200'})
+
+const client = new Client({ node: 'https://localhost:9200/',
+                         auth: {
+                                username: 'elastic',
+                                password: 'Diyme7Yz_d2Rs*L4IVud'
+                              },
+                          tls: {
+                                rejectUnauthorized: false
+ },})
+
+// elastic
+// Diyme7Yz_d2Rs*L4IVud
 
 
-app.get('/update_data', (req, res) => {
+app.get('/search_by_price', (req, res) => {
+
+  // var quote = req.body.quote;
+  // var gtr = req.body.gtr;
+  // var lte = req.body.lte;
 
 	async function run () {
-	  await client.index({
-	    index: 'game-of-thrones',
-	    document: {
-	      character: 'Ned Stark',
-	      quote: 'Winter is coming.'
-	    }
-	  })
 
-	  await client.indices.refresh({ index: 'game-of-thrones' })}
+	const result = await client.search(
+      {
+        index: 'ebay',
+        from: 0,
+        body: {
+          query: {
+            range: {
+            	price : {
+		          gte: 100,
+		          lte: 1000,
+              boost: 1.0
+            	},
+            },
+          },
+        },
+      },
+      {
+        ignore: [404],
+        maxRetries: 3,
+      }
+    );
 
+	  console.log(result.hits.hits);
+    console.log("end");
+	  const log_st_qu = result.hits.hits[0]['_source']['product'];
+	  const log_st_cha = result.hits.hits[0]['_source']['price'];
+	  res.send(log_st_qu + log_st_cha);
+
+	}
   run();
+
 });
 
-app.get('/search', (req, res) => {
 
-async function run () {
-  const result= await client.search({
-    index: 'game-of-thrones',
-    query: {
-      match: { quote: 'winter' }
-    }
-  })
-  console.log(result.hits.hits);
-  const log_st_qu = result.hits.hits[0]['_source']['quote'];
-  const log_st_cha = result.hits.hits[0]['_source']['character'];
-  res.send(log_st_qu + log_st_cha);
+app.get('/search_by_keyword', (req, res) => {
 
-}
+  var quote = 'computer';
+
+	async function run () {
+
+	const result = await client.search(
+      {
+        index: 'ebay',
+        from: 0,
+        body: {
+          query: {
+            multi_match: {
+              query: quote,
+              fields: ["product"]
+            },
+          },
+        },
+      },
+      {
+        ignore: [404],
+        maxRetries: 3,
+      }
+    );
+
+	  console.log(result.hits.hits);
+	  const log_st_qu = result.hits.hits[0]['_source']['product'];
+	  const log_st_cha = result.hits.hits[0]['_source']['price'];
+	  res.send(log_st_qu + log_st_cha);
+
+	}
   run();
 
 });
+
 
 app.get('/es', (req, res) => {
 
+	const products = ["soap", "computer", "bike",  "moniter", "mouse", "phone", "keyborad", "shoes"];
+	const prices = [200, 500, 100, 200, 20, 1000, 100, 50];
+
 	async function run () {
 	  // Let's start by indexing some data
-	  await client.index({
-	    index: 'game-of-thrones',
-	    document: {
-	      character: 'Ned Stark',
-	      quote: 'Winter is coming.'
-	    }
-	  })
 
-	  await client.index({
-	    index: 'game-of-thrones',
-	    document: {
-	      character: 'Daenerys Targaryen',
-	      quote: 'I am the blood of the dragon.'
-	    }
-	  })
+		let i = 0;
+		while (i < products.length) {
+			  await client.index({
+			    index: 'ebay',
+			    document: {
+			      product: products[i],
+			      price: prices[i]
+			    }
+			  })
+		    i++;
+		}
 
-	  // here we are forcing an index refresh, otherwise we will not
-	  // get any result in the consequent search
-	  await client.indices.refresh({ index: 'game-of-thrones' })
+		await client.indices.refresh({ index: 'ebay' })
 
-	  // Let's search!
-	  const result= await client.search({
-	    index: 'game-of-thrones',
-	    query: {
-	      match: { quote: 'winter' }
-	    }
-	  })
+		// Let's search!
+		const result= await client.search({
+				index: 'ebay',
+				query: { match: { product: 'soap' }}
+		})
 
-	  console.log(result.hits.hits);
-	  const log_st_qu = result.hits.hits[0]['_source']['quote'];
-	  const log_st_cha = result.hits.hits[0]['_source']['character'];
-	  res.send(log_st_qu + log_st_cha);
+		console.log(result.hits.hits);
+		const log_st_qu = result.hits.hits[0]['_source']['product'];
+		const log_st_cha = result.hits.hits[0]['_source']['price'];
+		res.send(log_st_qu + log_st_cha);
 }
 
 run();
@@ -105,7 +157,24 @@ run();
 });
 
 
-// // default display
-// app.get('/', (req, res) => {
-//     res.send('Hello World!');
-//   });
+
+// app.get('/update_data', (req, res) => {
+
+//   var website = req.body.website;
+//   var n_product = req.body.character;
+//   var n_price = req.body.price;
+
+//  async function run () {
+//    await client.index({
+//      index: website,
+//      document: {
+//        product: n_product,
+//        price: n_price
+//      }
+//    })
+
+//    await client.indices.refresh({ index: 'game-of-thrones' })
+//  }
+
+//   run();
+// });
