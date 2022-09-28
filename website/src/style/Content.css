@@ -1,11 +1,15 @@
-#Content {
+#content {
   text-align: left;
-  margin-top: 20px;
+  padding:10px;
+  padding-bottom:30px;   /* Height of the footer */
+
+}
+.container{
   margin-left:10px;
 }
 .form-label {display: inline;}
 
-.item-table {
+/* .item-table {
   border-collapse: collapse;
   margin: 25px 0;
   font-size: 0.9em;
@@ -31,7 +35,7 @@ tr:nth-of-type(even) {
 
 .item-table tbody tr:last-of-type {
   border-bottom: 2px solid #009879;
-}
+} */
 
 
 
