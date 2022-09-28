@@ -4,7 +4,7 @@ class Content extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {items : "ack", queued : ""};
+    this.state = {items : "hi!", queued : ""};
 
     this.handleChange.bind(this);
     this.handleSubmit.bind(this);
@@ -25,8 +25,8 @@ class Content extends React.Component {
       <div class="container" id = "Content">
         <div class="row">
             <div class="col-md-8">
+                    <form onSubmit={(event) => this.handleSubmit(event)}>
                     <div class="row align-items-center" >
-                      <form onSubmit={(event) => this.handleSubmit(event)}>
                         <div class="col input-group">
                           <label class="input-group-text">Budget</label>
                           <input type="text" class="form-control" id="budget" placeholder="Enter budget" onChange={(event) => this.handleChange(event)} name="budget"/>
@@ -44,14 +44,21 @@ class Content extends React.Component {
                           <label class="form-label"> </label>
                           <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
-                      </form>
                     </div>
+                    </form>
               </div>      
         </div>
-        <div class= "container" id="mainListContainer">
-              <ol id="itemList">
+        <div class= "row" id="mainListContainer">
+            <div class="col-md-8">
+              <table class="item-table">
+                <tr>
+                  <th>Rank</th>
+                  <th>Name</th>
+                  <th>Price</th>
+                </tr>
                 {this.getItems()}
-              </ol>
+              </table>
+            </div>
         </div>
     </div>
     );
@@ -60,7 +67,11 @@ class Content extends React.Component {
   getItems() {
     const rows = [];
     for(var i = 0; i < this.state.items.length; i++){
-        rows.push(<li>{this.state.items[i]}</li>);
+        const row = [];
+        row.push(<td>{i+1}</td>);
+        row.push(<td><a href="www.osu.edu">{this.state.items[i]}</a></td>);
+        row.push(<td>$10000</td>);
+        rows.push(<tr>{row}</tr>);
     }
     return rows;
   }
