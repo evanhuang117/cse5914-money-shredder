@@ -3,7 +3,7 @@
 
 ## Starting the containers
 
-`docker compose up -d`
+`sudo docker compose up -d`
 
 ### Rebuilding all containers from scratch
 
@@ -11,5 +11,5 @@
 
 ### Rebuilding a single service from scratch
 
-`docker compose up -d --build your_service_name`
+`sudo docker compose up -d --build your_service_name`
 The website can be visited at http://localhost
