@@ -31,7 +31,7 @@ async def update_elasticsearch(es, session, loop):
         logger.debug(bulk_actions[:2])
         asyncio.ensure_future(es.bulk(body=bulk_actions), loop=loop)
         # logger.debug(f"ES ERRORS: {resp.get('errors')}")
-        i+= len(listings)
+        i += len(listings)
     logger.info('finished updating es')
     return i
 
@@ -42,8 +42,9 @@ async def process_listings(listings):
                            '_index': 'etsy'}}
                for l in listings]
     # replace newline chars in text bc bulk uses new line delimited json
-    listings = [{key: value.replace('\n', '') for key, value in l.items(
-    ) if isinstance(value, str)} for l in listings]
+    listings = [{key: value.replace('\n', '') if isinstance(value, str) else value
+                 for key, value in l.items()}
+                for l in listings]
     # create docs to upsert
     # add upsert=true to all results
     listings = [{'doc': l, 'doc_as_upsert': 'true'} for l in listings]
@@ -75,13 +76,12 @@ async def get_listings(session, params={'limit': 100, 'offset': 0}, search_strin
             break
 
 
-async def do_stuff_periodically(loop, interval, periodic_function, *args):
+async def do_stuff_periodically(interval, periodic_function, *args):
     while True:
         logger.debug("Starting periodic function")
         await asyncio.gather(
             asyncio.sleep(interval),
-            periodic_function(*args),
-            loop=loop
+            periodic_function(*args)
         )
 
 
