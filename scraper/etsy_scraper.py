@@ -19,18 +19,21 @@ async def main():
 
     logger.info('connected')
     session = aiohttp.ClientSession()
-
+    loop = asyncio.get_event_loop()
     await do_stuff_periodically(
-        60*60*24, update_elasticsearch, es, session)
+        60*60*24, update_elasticsearch, es, session, loop)
 
 
-async def update_elasticsearch(es, session):
+async def update_elasticsearch(es, session, loop):
+    i = 0
     async for listings in get_listings(session):
         bulk_actions = await process_listings(listings)
         logger.debug(bulk_actions[:2])
-        resp = await es.bulk(body=bulk_actions)
-        logger.debug(f"ES ERRORS: {resp.get('errors')}")
+        asyncio.ensure_future(es.bulk(body=bulk_actions), loop=loop)
+        # logger.debug(f"ES ERRORS: {resp.get('errors')}")
+        i += len(listings)
     logger.info('finished updating es')
+    return i
 
 
 async def process_listings(listings):
@@ -39,8 +42,9 @@ async def process_listings(listings):
                            '_index': 'etsy'}}
                for l in listings]
     # replace newline chars in text bc bulk uses new line delimited json
-    listings = [{key: value.replace('\n', '') for key, value in l.items(
-    ) if isinstance(value, str)} for l in listings]
+    listings = [{key: value.replace('\n', '') if isinstance(value, str) else value
+                 for key, value in l.items()}
+                for l in listings]
     # create docs to upsert
     # add upsert=true to all results
     listings = [{'doc': l, 'doc_as_upsert': 'true'} for l in listings]
@@ -60,7 +64,6 @@ async def interleave(arr1, arr2):
 
 
 async def get_listings(session, params={'limit': 100, 'offset': 0}, search_string="", headers={'x-api-key': etsy_api_key}):
-    debug = True
     while True:
         async with session.get(f"https://openapi.etsy.com/v3/application/listings/active", params={str(i): str(j) for i, j in params.items()}, headers={str(i): str(j) for i, j in headers.items()}) as response:
             if (response.status != 200):
@@ -69,7 +72,7 @@ async def get_listings(session, params={'limit': 100, 'offset': 0}, search_strin
             page = await response.json()
         yield page.get('results')
         params['offset'] += 100
-        if debug:
+        if debug_flag:
             break
 
 
@@ -78,7 +81,7 @@ async def do_stuff_periodically(interval, periodic_function, *args):
         logger.debug("Starting periodic function")
         await asyncio.gather(
             asyncio.sleep(interval),
-            periodic_function(*args),
+            periodic_function(*args)
         )
 
 
