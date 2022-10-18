@@ -4,6 +4,7 @@ import asyncio
 import aiohttp
 from logger import logger
 from config import *
+from utils import EtsySearcher
 
 
 async def main():
@@ -19,9 +20,25 @@ async def main():
 
     logger.info('connected')
     session = aiohttp.ClientSession()
+
+    searchers = [EtsySearcher(session, 'https://openapi.etsy.com/v3/application/listings/active',
+                          ['listing_id', 'user_id', 'shop_id'], 'etsy', etsy_api_key)]
     loop = asyncio.get_event_loop()
-    await do_stuff_periodically(
-        60*60*24, update_elasticsearch, es, session, loop)
+
+    search_tasks = [do_stuff_periodically(
+        60*60*24, insert_elasticsearch, es, loop, s.get_bulk_actions()) for s in searchers]
+
+    await asyncio.gather(*search_tasks)
+
+    # await do_stuff_periodically(
+    #     60*60*24, update_elasticsearch, es, session, loop)
+
+
+async def insert_elasticsearch(es, loop, bulk_actions):
+    async for listings in bulk_actions:
+        logger.debug(listings[:2])
+        asyncio.ensure_future(es.bulk(body=listings), loop=loop)
+    logger.info('finished updating es')
 
 
 async def update_elasticsearch(es, session, loop):
