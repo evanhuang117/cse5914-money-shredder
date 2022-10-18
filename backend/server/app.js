@@ -14,10 +14,7 @@ const corsOptions ={
 
 
 
-
 app.use(cors(corsOptions));
-
-// set access port
 app.use(express.json());
 app.listen(port, () => {
   console.log(`RUN http://localhost:${port}`);
@@ -27,18 +24,40 @@ app.listen(port, () => {
 
 const {Client} = require('@elastic/elasticsearch')
 
-const client = new Client({ node: 'https://localhost:9200/',
-                         auth: {
-                                username: 'elastic',
-                                password: 'Diyme7Yz_d2Rs*L4IVud'
-                              },
-                          tls: {
-                                rejectUnauthorized: false
- },})
+const client = new Client({ node: 'http://localhost:9200/'})
 
-// elastic
-// Diyme7Yz_d2Rs*L4IVud
 
+
+app.get('/search_all', (req, res) => {
+
+  async function run () {
+
+  const result = await client.search(
+      {
+        index: 'etsy',
+        from: 0,
+        body: {
+          query: {
+            match_all: {}
+          },
+        },
+      },
+      {
+        ignore: [404],
+        maxRetries: 3,
+      }
+    );
+
+    console.log(result.hits.hits);
+    console.log("end");
+    const log_st_qu = result.hits.hits[0]['_source']['product'];
+    const log_st_cha = result.hits.hits[0]['_source']['price'];
+    // res.send(log_st_qu + log_st_cha);
+    return res.send(result)
+  }
+  run();
+
+});
 
 app.get('/search_by_price', (req, res) => {
 
@@ -74,8 +93,8 @@ app.get('/search_by_price', (req, res) => {
     console.log("end");
 	  const log_st_qu = result.hits.hits[0]['_source']['product'];
 	  const log_st_cha = result.hits.hits[0]['_source']['price'];
-	  res.send(log_st_qu + log_st_cha);
-
+	  // res.send(log_st_qu + log_st_cha);
+    return res.send(result)
 	}
   run();
 
@@ -185,27 +204,26 @@ app.get('/es', (req, res) => {
 		// 		query: { match: { product: 'soap' }}
 		// })
 
-
-    const result = await client.search({
-        index: 'ebay',
-        query: {
-            dis_max: {
-              queries: [
-                {
-                  match: {
-                    product: 'soap'
-                  }
-                },
-                {
-                  match: {
-                    category: 'c1'
-                  }
-                }
-              ],
-              tie_breaker: 0.3
-            }
-        }
-    })
+    // const result = await client.search({
+    //     index: 'ebay',
+    //     query: {
+    //         dis_max: {
+    //           queries: [
+    //             {
+    //               match: {
+    //                 product: 'soap'
+    //               }
+    //             },
+    //             {
+    //               match: {
+    //                 category: 'c1'
+    //               }
+    //             }
+    //           ],
+    //           tie_breaker: 0.3
+    //         }
+    //     }
+    // })
 
     const result = await client.search({
         index: 'ebay',
