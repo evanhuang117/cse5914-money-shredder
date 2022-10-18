@@ -1,15 +1,14 @@
-import '../style/Content.css';
-import fakeData from '../fake_data.json';
+import "../style/Content.css";
+import fakeData from "../fake_data.json";
 import React from "react";
 class Content extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
-      items :fakeData, 
+      items: fakeData,
       // queued : "",
-      budget:"",
-      showTable:'none'
+      budget: "",
+      showTable: "none",
     };
 
     this.handleChange.bind(this);
@@ -22,8 +21,8 @@ class Content extends React.Component {
     const name = target.name;
 
     this.setState({
-      showTable:"block",
-      [name]: value
+      showTable: "block",
+      [name]: value,
     });
     this.getItems();
     event.preventDefault();
@@ -35,57 +34,72 @@ class Content extends React.Component {
     const name = target.name;
 
     this.setState({
-      [name]: value
+      [name]: value,
     });
     // alert(String(this.state.budget))
   }
   getItems() {
     var rowData = this.state.items;
-    var data = rowData.filter((number) => number.price < parseInt(this.state.budget));
+    var data = rowData.filter(
+      (number) => number.price < parseInt(this.state.budget)
+    );
     const rows = [];
-    for(var i = 0; i < data.length; i++){
+    for (var i = 0; i < data.length; i++) {
       const row = [];
-      row.push(<th scope = "row">{i+1}</th>);
-      row.push(<td><a href="www.osu.edu">{data[i].item}</a></td>);
-      row.push(<td>${data[i].price}</td>);
-      rows.push(
-          <tr>
-            {row}
-          </tr>
+      row.push(<th scope="row">{i + 1}</th>);
+      row.push(
+        <td>
+          <a href="www.osu.edu">{data[i].item}</a>
+        </td>
       );
+      row.push(<td>${data[i].price}</td>);
+      rows.push(<tr>{row}</tr>);
     }
-    if(rows==null) return <tr></tr>
+    if (rows == null) return <tr></tr>;
     return rows;
   }
   render() {
     return (
-      <div id = "content">
+      <div id="content">
         <div class="container">
           <form onSubmit={(event) => this.handleSubmit(event)}>
             <div class="row">
-                <div class="col input-group">
-                  <label class="input-group-text">Budget</label>
-                  <input type="text" class="form-control" id="budget" name = "budget" placeholder="Enter budget" value = {this.state.budget} onChange={(event) => this.handleChange(event)}/>
-                  {/* <input type="text" class="form-control" id="budget" name = "budget" placeholder="Enter budget" /> */}
-                </div>
-                <div class="col input-group">
-                  <label class="input-group-text">Category</label>
-                  <select class="form-select">
-                    <option>food</option>
-                    <option>beverage</option>
-                    <option>health & beauty</option>
-                    <option>home essentials</option>
-                    <option>other</option>
-                  </select>
-                </div>
-                <div class="col">
-                  <label class="form-label"> </label>
-                  <button type="submit" class="btn btn-primary">Submit</button>
-                </div>
+              <div class="col-input-group">
+                <label class="input-group-text">Budget</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="budget"
+                  name="budget"
+                  placeholder="Enter budget"
+                  value={this.state.budget}
+                  onChange={(event) => this.handleChange(event)}
+                />
+                {/* <input type="text" class="form-control" id="budget" name = "budget" placeholder="Enter budget" /> */}
               </div>
+              <div class="col-input-group">
+                <label class="input-group-text">Category</label>
+                <select class="form-select">
+                  <option>food</option>
+                  <option>beverage</option>
+                  <option>health & beauty</option>
+                  <option>home essentials</option>
+                  <option>other</option>
+                </select>
+              </div>
+              <div class="col">
+                <label class="form-label"> </label>
+                <button type="submit" class="btn btn-primary">
+                  Submit
+                </button>
+              </div>
+            </div>
           </form>
         </div>
-        <div class = "container ps-4 mt-5" style={{display:this.state.showTable}}>
+        <div
+          class="container ps-4 mt-5"
+          style={{ display: this.state.showTable }}
+        >
           <div class="row" id="mainListContainer">
             <div class="col-md-8 table-responsive">
               <table class="table table-striped">
@@ -96,20 +110,14 @@ class Content extends React.Component {
                     <th scope="col">Price</th>
                   </tr>
                 </thead>
-                <tbody>
-                  {this.getItems()}
-                </tbody>
+                <tbody>{this.getItems()}</tbody>
               </table>
             </div>
           </div>
         </div>
       </div>
-      
     );
   }
-
-
-
 }
 
 export default Content;

@@ -1,13 +1,28 @@
+.container {
+  width: 40vh;
+}
 #content {
   text-align: left;
-  padding:10px;
-  padding-bottom:30px;   /* Height of the footer */
+  padding: 10px;
+  padding-bottom: 30px;
 
+  /* Height of the footer */
 }
-.container{
-  margin-left:10px;
+.row {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
-.form-label {display: inline;}
+.col-input-group {
+  display: flex;
+  margin-bottom: 20px;
+}
+.container {
+  margin-left: 10px;
+}
+.form-label {
+  display: inline;
+}
 
 /* .item-table {
   border-collapse: collapse;
@@ -36,7 +51,3 @@ tr:nth-of-type(even) {
 .item-table tbody tr:last-of-type {
   border-bottom: 2px solid #009879;
 } */
-
-
-
-

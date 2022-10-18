@@ -1,0 +1,21 @@
+.category {
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid;
+  height: 100%;
+  width: 100%;
+}
+.search {
+  border-bottom: 1px solid;
+  height: 13%;
+  width: 100%;
+  text-align: center;
+}
+#searchbar {
+  margin-top: 50px;
+}
+input {
+}
+
+.results {
+}
