@@ -1,6 +1,8 @@
 import '../style/Content.css';
 import fakeData from '../fake_data.json';
 import React from "react";
+import axios from 'axios';
+
 class Content extends React.Component {
 
   constructor(props) {
@@ -20,6 +22,13 @@ class Content extends React.Component {
     const target = event.target;
     const value = target.value;
     const name = target.name;
+
+    axios.get("http://localhost:7000/search_all", {
+        params: {}
+    }).then((data)=>{
+      const data_ = JSON.parse(JSON.stringify(data.data.hits.hits));
+      console.log('data_ = ', data_);
+    });
 
     this.setState({
       showTable:"block",
