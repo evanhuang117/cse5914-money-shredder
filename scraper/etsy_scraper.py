@@ -5,6 +5,7 @@ import aiohttp
 from logger import logger
 from config import *
 from utils import EtsySearcher
+from pprint import pprint, PrettyPrinter
 
 
 async def main():
@@ -18,7 +19,7 @@ async def main():
         except ConnectionError:
             await asyncio.sleep(2)
 
-    logger.info('connected')
+    logger.info('connected to es')
     session = aiohttp.ClientSession()
 
     searchers = [EtsySearcher(session, 'https://openapi.etsy.com/v3/application/listings/active',
@@ -36,7 +37,7 @@ async def main():
 
 async def insert_elasticsearch(es, loop, bulk_actions):
     async for listings in bulk_actions:
-        logger.debug(listings[:2])
+        logger.debug(PrettyPrinter().pformat(listings[:2]))
         asyncio.ensure_future(es.bulk(body=listings), loop=loop)
     logger.info('finished updating es')
 

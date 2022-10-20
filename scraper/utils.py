@@ -33,6 +33,10 @@ class Searcher:
         listings = [{key: value.replace('\n', '') if isinstance(value, str) else value
                     for key, value in l.items()}
                     for l in listings]
+        # add in images for each listing
+        listings = [dict(l, **{'images': await self.retrieve_images(l.get('listing_id'))})
+                    for l in listings]
+
         # create docs to upsert
         # add upsert=true to all results
         listings = [{'doc': l, 'doc_as_upsert': 'true'} for l in listings]
@@ -62,4 +66,5 @@ class EtsySearcher(Searcher):
     async def retrieve_images(self, listing_id):
         async with self.session.get(f'https://openapi.etsy.com/v3/application/listings/{listing_id}/images',
                                     headers={str(i): str(j) for i, j in self.headers.items()}) as response:
-                                    
+            resp = await response.json()
+        return [{'url': img.get('url_fullxfull')} for img in resp.get('results')]
