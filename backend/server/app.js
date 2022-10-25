@@ -2,7 +2,7 @@
 
 const express = require("express");
 const app = express();
-const port = 7000;
+const port = 7001;
 
 const cors = require('cors');
 
@@ -24,7 +24,7 @@ app.listen(port, () => {
 
 const {Client} = require('@elastic/elasticsearch')
 
-const client = new Client({ node: 'http://localhost:9200/'})
+const client = new Client({ node: 'http://elasticsearch:9200/'})
 
 
 
