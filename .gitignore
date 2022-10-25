@@ -9,7 +9,6 @@ __pycache__/
 *.so
 
 *node_modules*
-*elasticsearch-data*
 
 # Distribution / packaging
 .Python
