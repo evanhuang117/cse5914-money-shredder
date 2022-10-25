@@ -172,7 +172,7 @@ class EbaySearcher(Searcher):
             max_listings = min(10000, response.get('total'))
 
             for offset in range(limit, max_listings, limit):
-                response = await self.try_search(client=client, limit=limit, offset=offset, category_ids=str(c))
+                response = await self.try_search(client=client, limit=limit, offset=offset, category_ids=str(c), filter=['filter=buyingOptions:{FIXED_PRICE}'])
                 # response: Response[SearchPagedCollection] = await rerun_on_exception(search.asyncio_detailed, client=client, limit=limit, offset=offset, category_ids=str(c))
                 if response:
                     response = json.loads(response.content)
