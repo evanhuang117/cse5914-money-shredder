@@ -1,0 +1,25 @@
+.header {
+  width: 100%;
+  text-align: center;
+  background: #84bbb0;
+  color: white;
+}
+.header h1 {
+  margin: 0;
+  padding: 5px;
+  font-size: 25px;
+}
+.footer {
+  position:fixed;
+  bottom:0;
+  width:100%;
+  height:40px;
+  background-color: #84bbb0;
+  color: white;
+  text-align: center;
+}
+.footer h1 {
+  margin: 0;
+  padding: 5px;
+  font-size: 25px;
+}
