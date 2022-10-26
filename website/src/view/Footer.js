@@ -2,7 +2,7 @@ import "../style/Header-Footer.css";
 
 function Footer() {
   return (
-    <div class="footer">
+    <div className="footer">
       <h1>CSE 5914</h1>
     </div>
   );
