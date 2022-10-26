@@ -5,31 +5,25 @@ import axios from 'axios';
 
 class Content extends React.Component {
 
+
   constructor(props) {
     super(props);
     this.state = {
-      items :fakeData, 
+      items : null, 
       // queued : "",
       budget:"",
       showTable:'none'
     };
-
-    this.handleChange.bind(this);
-    this.handleSubmit.bind(this);
+    this.handleChange=this.handleChange.bind(this);
+    this.handleSubmit= this.handleSubmit.bind(this);
   }
 
+ 
+  
   handleSubmit(event) {
     const target = event.target;
     const value = target.value;
     const name = target.name;
-
-    axios.get("http://localhost:7000/search_all", {
-        params: {}
-    }).then((data)=>{
-      const data_ = JSON.parse(JSON.stringify(data.data.hits.hits));
-      console.log('data_ = ', data_);
-    });
-
     this.setState({
       showTable:"block",
       [name]: value
@@ -42,21 +36,32 @@ class Content extends React.Component {
     const target = event.target;
     const value = target.value;
     const name = target.name;
-
     this.setState({
       [name]: value
     });
     // alert(String(this.state.budget))
   }
+
+  componentDidMount() {
+    axios.get("http://localhost:7001/search_all")
+      .then((data)=>{
+        const data_ = JSON.parse(JSON.stringify(data.data.hits.hits));
+        this.setState({
+          items: data_
+        });
+    });
+  }
+
   getItems() {
     var rowData = this.state.items;
-    var data = rowData.filter((number) => number.price < parseInt(this.state.budget));
+    var data = rowData.filter((data) => data._source.price.amount < parseInt(this.state.budget));
+    console.log(data);
     const rows = [];
     for(var i = 0; i < data.length; i++){
       const row = [];
       row.push(<th scope = "row">{i+1}</th>);
-      row.push(<td><a href="www.osu.edu">{data[i].item}</a></td>);
-      row.push(<td>${data[i].price}</td>);
+      row.push(<td><a href={data[i]._source.url}>{data[i]._source.title}</a></td>);
+      row.push(<td>${data[i]._source.price.amount}</td>);
       rows.push(
           <tr>
             {row}
@@ -66,8 +71,12 @@ class Content extends React.Component {
     if(rows==null) return <tr></tr>
     return rows;
   }
+
   render() {
-    return (
+    if (this.state.items == null){
+      return ( <h1> Loading </h1>)
+    }
+    else{return (
       <div id = "content">
         <div class="container">
           <form onSubmit={(event) => this.handleSubmit(event)}>
@@ -106,7 +115,7 @@ class Content extends React.Component {
                   </tr>
                 </thead>
                 <tbody>
-                  {this.getItems()}
+                {this.getItems()}
                 </tbody>
               </table>
             </div>
@@ -114,7 +123,7 @@ class Content extends React.Component {
         </div>
       </div>
       
-    );
+    );}  
   }
 
 
