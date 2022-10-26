@@ -1,0 +1,48 @@
+.left-container {
+  /* container on the left */
+  width: 30%;
+
+  /* Height of the footer */
+}
+
+.filter-container {
+  /* contains all filters*/
+  margin-top: 40px;
+  list-style-type: none;
+}
+
+/* Styles for a single filter */
+.filter {
+  /* width: 320px; */
+  width: auto;
+  height: auto;
+  display: flex;
+  padding: 15px;
+  justify-content: space-between;
+  align-items: left;
+}
+.filter-name {
+  font-size: 20px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+}
+
+.filter-button {
+  font-size: 35px;
+}
+.filter-list {
+  display: flex;
+  flex-direction: column;
+  padding-left: 22px;
+}
+.single-filter {
+  display: flex;
+  margin: 10px;
+}
+.single-filter h4 {
+  font-size: 15px;
+  font-weight: 600;
+  padding-left: 20px;
+  padding-top: 7px;
+}

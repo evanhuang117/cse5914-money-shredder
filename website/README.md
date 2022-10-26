@@ -1,7 +1,8 @@
 ## Install
 You need npm and Node.js installed.
 https://nodejs.org/en/download/
-
+### `npm install --save bootstrap-daterangepicker`
+### `npm install --save react-bootstrap-daterangepicker`
 ## Execution
 In the project directory, you can run:
 

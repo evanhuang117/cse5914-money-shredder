@@ -1,8 +1,8 @@
-import "../style/Header.css";
+import "../style/Header-Footer.css";
 
 function Header() {
   return (
-    <div id="header">
+    <div className="header">
       <h1>Money Shredder</h1>
     </div>
   );
