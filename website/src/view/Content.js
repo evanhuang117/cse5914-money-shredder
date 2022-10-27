@@ -54,14 +54,14 @@ class Content extends React.Component {
 
   getItems() {
     var rowData = this.state.items;
-    var data = rowData.filter((data) => data._source.price.amount < parseInt(this.state.budget));
+    var data = rowData.filter((data) => (data._source.price.amount/data._source.price.divisor) < parseInt(this.state.budget));
     console.log(data);
     const rows = [];
     for(var i = 0; i < data.length; i++){
       const row = [];
       row.push(<th scope = "row">{i+1}</th>);
       row.push(<td><a href={data[i]._source.url}>{data[i]._source.title}</a></td>);
-      row.push(<td>${data[i]._source.price.amount}</td>);
+      row.push(<td>${data[i]._source.price.amount/data[i]._source.price.divisor}</td>);
       rows.push(
           <tr>
             {row}
