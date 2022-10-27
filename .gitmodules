@@ -1,0 +1,3 @@
+[submodule "moneyshredder-data"]
+	path = moneyshredder-data
+	url = git@github.com:evanhuang117/moneyshredder-data.git

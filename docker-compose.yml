@@ -11,7 +11,7 @@ services:
     ports:
       - 9200:9200
     volumes:
-      - ./elasticsearch-data:/usr/share/elasticsearch/data
+      - ./moneyshredder-data:/usr/share/elasticsearch/data
 
   scraper:
     container_name: scraper
