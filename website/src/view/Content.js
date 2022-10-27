@@ -1,8 +1,8 @@
-import '../style/Content.css';
-import fakeData from '../fake_data.json';
+import Filter from "../components/Filter";
 import React from "react";
-import axios from 'axios';
-
+import axios from "axios";
+import fakeData from "../fake_data.json";
+import "../style/Content.css";
 class Content extends React.Component {
 
 
@@ -30,6 +30,15 @@ class Content extends React.Component {
     });
     this.getItems();
     event.preventDefault();
+    console.log("gang");
+    axios
+      .get("http://localhost:7001/search_all", {
+        params: {},
+      })
+      .then((data) => {
+        const data_ = JSON.parse(JSON.stringify(data.data.hits.hits));
+        console.log("data_ = ", data_);
+      });
   }
 
   handleChange(event) {
@@ -86,19 +95,35 @@ class Content extends React.Component {
                   <input type="text" class="form-control" id="budget" name = "budget" placeholder="Enter budget" value = {this.state.budget} onChange={(event) => this.handleChange(event)}/>
                   {/* <input type="text" class="form-control" id="budget" name = "budget" placeholder="Enter budget" /> */}
                 </div>
-                <div class="col input-group">
-                  <label class="input-group-text">Category</label>
-                  <select class="form-select">
-                    <option>food</option>
-                    <option>beverage</option>
-                    <option>health & beauty</option>
-                    <option>home essentials</option>
-                    <option>other</option>
-                  </select>
+              </div>
+              <div className="row mb-2">
+                <div className="col ">
+                  <div className="card rounded-4" style={{ width: "auto" }}>
+                    <img
+                      className="card-img-top img-top"
+                      src={require("../img/coffee.jpeg")}
+                      alt="Card image cap"
+                    />
+                    <div className="card-body">
+                      <h5 className="card-title">Product Name</h5>
+                      <p className="card-text">Description</p>
+                      <a className="btn btn-primary">Amazon</a>
+                    </div>
+                  </div>
                 </div>
-                <div class="col">
-                  <label class="form-label"> </label>
-                  <button type="submit" class="btn btn-primary">Submit</button>
+                <div className="col ">
+                  <div className="card rounded-4" style={{ width: "auto" }}>
+                    <img
+                      className="card-img-top img-top"
+                      src={require("../img/coffee.jpeg")}
+                      alt="Card image cap"
+                    />
+                    <div className="card-body">
+                      <h5 className="card-title">Product Name</h5>
+                      <p className="card-text">Description</p>
+                      <a className="btn btn-primary">Amazon</a>
+                    </div>
+                  </div>
                 </div>
               </div>
           </form>
@@ -125,9 +150,5 @@ class Content extends React.Component {
       
     );}  
   }
-
-
-
 }
-
 export default Content;

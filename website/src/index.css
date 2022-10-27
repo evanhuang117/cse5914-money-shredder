@@ -12,7 +12,7 @@ code {
     monospace;
 }
 
-.middle {
+.filters-and-results {
   display: flex;
   height: 100vh;
 }

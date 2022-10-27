@@ -3,21 +3,24 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
-import Content from "./view/Content";
+import Filters from "./view/Filters";
 import Header from "./view/Header";
 import Footer from "./view/Footer";
-import Category from "./view/Category";
 import reportWebVitals from "./reportWebVitals";
-
+import Content from "./view/Content";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <div>
-      <Header />
-      <div className="middle">
-        <Content />
-        <Category />
-      </div>
+      <Header /> {/* Display Header */}
+      <Content />
+      {/* Display SearchBar */}
+      {/* <SearchBar />  */}
+      {/* <div className="filters-and-results"> */}
+        {/* Display Filters on the left and results on the right */}
+        {/* <Filters /> */}
+        {/* <Results /> */}
+      {/* </div> */}
       <Footer />
     </div>
   </React.StrictMode>
