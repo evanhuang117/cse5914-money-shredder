@@ -30,15 +30,6 @@ class Content extends React.Component {
     });
     this.getItems();
     event.preventDefault();
-    console.log("gang");
-    axios
-      .get("http://localhost:7001/search_all", {
-        params: {},
-      })
-      .then((data) => {
-        const data_ = JSON.parse(JSON.stringify(data.data.hits.hits));
-        console.log("data_ = ", data_);
-      });
   }
 
   handleChange(event) {
@@ -97,34 +88,22 @@ class Content extends React.Component {
                 </div>
               </div>
               <div className="row mb-2">
-                <div className="col ">
+                {this.state.items.map((item)=>(
+                  <div className="col ">
                   <div className="card rounded-4" style={{ width: "auto" }}>
                     <img
                       className="card-img-top img-top"
-                      src={require("../img/coffee.jpeg")}
+                      src={item._source.images[0].url}
                       alt="Card image cap"
                     />
                     <div className="card-body">
-                      <h5 className="card-title">Product Name</h5>
-                      <p className="card-text">Description</p>
-                      <a className="btn btn-primary">Amazon</a>
+                      <h5 className="card-title">{item._source.title}</h5>
+                      <p className="card-text">{item._source.description}</p>
+                      <a className="btn btn-primary">{item._index}</a>
                     </div>
                   </div>
                 </div>
-                <div className="col ">
-                  <div className="card rounded-4" style={{ width: "auto" }}>
-                    <img
-                      className="card-img-top img-top"
-                      src={require("../img/coffee.jpeg")}
-                      alt="Card image cap"
-                    />
-                    <div className="card-body">
-                      <h5 className="card-title">Product Name</h5>
-                      <p className="card-text">Description</p>
-                      <a className="btn btn-primary">Amazon</a>
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
           </form>
         </div>
