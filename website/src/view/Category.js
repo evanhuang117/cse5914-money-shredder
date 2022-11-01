@@ -2,8 +2,8 @@ import "../style/Category.css";
 
 function Category() {
   return (
-    <div class="category">
-      <div class="search">
+    <div className="category">
+      <div className="search">
         <form id="searchbar" role="search">
           <input
             type="search"
@@ -15,7 +15,7 @@ function Category() {
           <button>Search</button>
         </form>
       </div>
-      <div class="result"></div>
+      <div className="result"></div>
     </div>
   );
 }
