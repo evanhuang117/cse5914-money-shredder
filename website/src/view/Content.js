@@ -107,24 +107,6 @@ class Content extends React.Component {
               </div>
           </form>
         </div>
-        <div class = "container ps-4 mt-5" style={{display:this.state.showTable}}>
-          <div class="row" id="mainListContainer">
-            <div class="col-md-8 table-responsive">
-              <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th scope="col">Rank</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Price</th>
-                  </tr>
-                </thead>
-                <tbody>
-                {this.getItems()}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
       </div>
       
     );}  
