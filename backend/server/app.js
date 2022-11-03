@@ -22,7 +22,7 @@ app.get("/search_all", (req, res) => {
   async function run() {
     const result = await client.search(
       {
-        index: "etsy",
+        index: "ebay",
         from: 0,
         body: {
           query: {

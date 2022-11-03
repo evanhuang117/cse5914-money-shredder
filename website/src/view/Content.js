@@ -57,14 +57,16 @@ class Content extends React.Component {
 
   getItems() {
     var rowData = this.state.items;
+
     var data = rowData.filter(
       (data) =>
-        data._source.price.amount / data._source.price.divisor <
+        parseFloat(data._source.price.value) <
         parseInt(this.state.budget)
     );
-    console.log(data);
+
     const rows = [];
     for (var i = 0; i < data.length; i++) {
+      console.log(i, data[i]._source.url)
       const row = [];
       row.push(<th scope="row">{i + 1}</th>);
       row.push(
@@ -73,7 +75,7 @@ class Content extends React.Component {
         </td>
       );
       row.push(
-        <td>${data[i]._source.price.amount / data[i]._source.price.divisor}</td>
+        <td>${data[i]._source.price.value}</td>
       );
       rows.push(<tr>{row}</tr>);
     }
