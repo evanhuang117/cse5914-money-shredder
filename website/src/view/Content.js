@@ -9,6 +9,7 @@ class Content extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      fullLists: null,
       items : null, 
       // queued : "",
       budget:"",
@@ -47,33 +48,41 @@ class Content extends React.Component {
       .then((data)=>{
         const data_ = JSON.parse(JSON.stringify(data.data.hits.hits));
         this.setState({
+          fullLists:data_,
           items: data_
         });
     });
   }
 
   getItems() {
-    var rowData = this.state.items;
+    var rowData = this.state.fullLists;
     var data = rowData.filter((data) => (data._source.price.amount/data._source.price.divisor) < parseInt(this.state.budget));
-    console.log(data);
-    const rows = [];
-    for(var i = 0; i < data.length; i++){
-      const row = [];
-      row.push(<th scope = "row">{i+1}</th>);
-      row.push(<td><a href={data[i]._source.url}>{data[i]._source.title}</a></td>);
-      row.push(<td>${data[i]._source.price.amount/data[i]._source.price.divisor}</td>);
-      rows.push(
-          <tr>
-            {row}
-          </tr>
-      );
-    }
-    if(rows==null) return <tr></tr>
-    return rows;
+    this.setState({
+      items: data
+    });
+  //   return (
+  //   <div className="row mb-2">
+  //   {this.state.items.map((item)=>(
+  //     <div className="col ">
+  //     <div className="card rounded-4" style={{ width: "auto" }}>
+  //       <img
+  //         className="card-img-top img-top"
+  //         src={item._source.images[0].url}
+  //         alt="Card image cap"
+  //       />
+  //       <div className="card-body">
+  //         <h5 className="card-title">{item._source.title}</h5>
+  //         <p className="card-text">{item._source.description}</p>
+  //         <a className="btn btn-primary">{item._index}</a>
+  //       </div>
+  //     </div>
+  //   </div>
+  //   ))}
+  // </div>)
   }
 
   render() {
-    if (this.state.items == null){
+    if (this.state.fullLists == null){
       return ( <h1> Loading </h1>)
     }
     else{return (
