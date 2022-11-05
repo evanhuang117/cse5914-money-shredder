@@ -1,4 +1,7 @@
-all: website backend scraper es
+.PHONY: website backend scraper es
+
+all: 
+	docker compose up -d --build
 
 website:
 	docker compose up -d --build website

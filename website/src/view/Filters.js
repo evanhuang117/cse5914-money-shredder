@@ -5,7 +5,7 @@ class Filters extends React.Component {
   render() {
     return (
       <div className="left-container">
-        <ul class="filter-container">
+        <ul className="filter-container">
           <Filter label="Budget" />
           <Filter label="Category" />
           <Filter label="Date" />

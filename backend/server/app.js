@@ -4,14 +4,7 @@ const express = require("express");
 const app = express();
 const port = 7001;
 
-const cors = require('cors');
-
-const corsOptions ={
-    origin:'http://localhost:3000',
-    credentials:true,
-    optionSuccessStatus:200
-}
-
+const cors = require("cors");
 
 app.use(cors());
 app.use(express.json());
@@ -19,25 +12,21 @@ app.listen(port, () => {
   console.log(`RUN http://localhost:${port}`);
 });
 
-'use strict'
+("use strict");
 
-const {Client} = require('@elastic/elasticsearch')
+const { Client } = require("@elastic/elasticsearch");
 
-const client = new Client({ node: 'http://elasticsearch:9200/'})
+const client = new Client({ node: "http://elasticsearch:9200/" });
 
-
-
-app.get('/search_all', (req, res) => {
-
-  async function run () {
-
-  const result = await client.search(
+app.get("/search_all", (req, res) => {
+  async function run() {
+    const result = await client.search(
       {
-        index: 'etsy',
+        index: "etsy",
         from: 0,
         body: {
           query: {
-            match_all: {}
+            match_all: {},
           },
         },
       },
@@ -49,73 +38,32 @@ app.get('/search_all', (req, res) => {
 
     console.log(result.hits.hits);
     console.log("end");
-    const log_st_qu = result.hits.hits[0]['_source']['product'];
-    const log_st_cha = result.hits.hits[0]['_source']['price'];
+    const log_st_qu = result.hits.hits[0]["_source"]["product"];
+    const log_st_cha = result.hits.hits[0]["_source"]["price"];
     // res.send(log_st_qu + log_st_cha);
-    return res.send(result)
+    return res.send(result);
   }
   run();
-
 });
 
-app.get('/search_by_price', (req, res) => {
-
+app.get("/search_by_price", (req, res) => {
   // var quote = req.body.quote;
   // var gtr = req.body.gtr;
   // var lte = req.body.lte;
 
-	async function run () {
-
-	const result = await client.search(
+  async function run() {
+    const result = await client.search(
       {
-        index: 'ebay',
+        index: "ebay",
         from: 0,
         body: {
           query: {
             range: {
-            	price : {
-		          gte: 100,
-		          lte: 1000,
-              boost: 1.0
-            	},
-            },
-          },
-        },
-      },
-      {
-        ignore: [404],
-        maxRetries: 3,
-      }
-    );
-
-	  console.log(result.hits.hits);
-    console.log("end");
-	  const log_st_qu = result.hits.hits[0]['_source']['product'];
-	  const log_st_cha = result.hits.hits[0]['_source']['price'];
-	  // res.send(log_st_qu + log_st_cha);
-    return res.send(result)
-	}
-  run();
-
-});
-
-
-
-app.get('/search_by_type', (req, res) => {
-
-  var quote = 'c2';
-
-  async function run () {
-
-  const result = await client.search(
-      {
-        index: 'ebay',
-        from: 0,
-        body: {
-          query: {
-            multi_match: {
-              query: quote,
-              fields: ["category"]
+              price: {
+                gte: 100,
+                lte: 1000,
+                boost: 1.0,
+              },
             },
           },
         },
@@ -127,31 +75,28 @@ app.get('/search_by_type', (req, res) => {
     );
 
     console.log(result.hits.hits);
-    const log_st_qu = result.hits.hits[0]['_source']['product'];
-    const log_st_cha = result.hits.hits[0]['_source']['price'];
-    res.send(log_st_qu + log_st_cha);
-
+    console.log("end");
+    const log_st_qu = result.hits.hits[0]["_source"]["product"];
+    const log_st_cha = result.hits.hits[0]["_source"]["price"];
+    // res.send(log_st_qu + log_st_cha);
+    return res.send(result);
   }
   run();
-
 });
 
+app.get("/search_by_type", (req, res) => {
+  var quote = "c2";
 
-app.get('/search_by_keyword', (req, res) => {
-
-  var quote = 'computer';
-
-	async function run () {
-
-	const result = await client.search(
+  async function run() {
+    const result = await client.search(
       {
-        index: 'ebay',
+        index: "ebay",
         from: 0,
         body: {
           query: {
             multi_match: {
               query: quote,
-              fields: ["product"]
+              fields: ["category"],
             },
           },
         },
@@ -162,46 +107,82 @@ app.get('/search_by_keyword', (req, res) => {
       }
     );
 
-	  console.log(result.hits.hits);
-	  const log_st_qu = result.hits.hits[0]['_source']['product'];
-	  const log_st_cha = result.hits.hits[0]['_source']['price'];
-	  res.send(log_st_qu + log_st_cha);
-
-	}
+    console.log(result.hits.hits);
+    const log_st_qu = result.hits.hits[0]["_source"]["product"];
+    const log_st_cha = result.hits.hits[0]["_source"]["price"];
+    res.send(log_st_qu + log_st_cha);
+  }
   run();
-
 });
 
+app.get("/search_by_keyword", (req, res) => {
+  var quote = "computer";
 
-app.get('/es', (req, res) => {
+  async function run() {
+    const result = await client.search(
+      {
+        index: "ebay",
+        from: 0,
+        body: {
+          query: {
+            multi_match: {
+              query: quote,
+              fields: ["product"],
+            },
+          },
+        },
+      },
+      {
+        ignore: [404],
+        maxRetries: 3,
+      }
+    );
 
-	const products = ["soap", "computer", "bike",  "moniter", "mouse", "phone", "keyborad", "shoes"];
-	const prices = [200, 500, 100, 200, 20, 1000, 100, 50];
-  const category = ['c1', 'c1', 'c1', 'c1', 'c2', 'c2', 'c2', 'c2'];
+    console.log(result.hits.hits);
+    const log_st_qu = result.hits.hits[0]["_source"]["product"];
+    const log_st_cha = result.hits.hits[0]["_source"]["price"];
+    res.send(log_st_qu + log_st_cha);
+  }
+  run();
+});
 
-	async function run () {
-	  // Let's start by indexing some data
+app.get("/es", (req, res) => {
+  const products = [
+    "soap",
+    "computer",
+    "bike",
+    "moniter",
+    "mouse",
+    "phone",
+    "keyborad",
+    "shoes",
+  ];
+  const prices = [200, 500, 100, 200, 20, 1000, 100, 50];
+  const category = ["c1", "c1", "c1", "c1", "c2", "c2", "c2", "c2"];
 
-		let i = 0;
-		while (i < products.length) {
-			  await client.index({
-			    index: 'ebay',
-			    document: {
-			      product: products[i],
-			      price: prices[i],
-            category: category[i]
-			    }
-			  })
-		    i++;
-		}
+  async function run() {
+    // Let's start by indexing some data
 
-		await client.indices.refresh({ index: 'ebay' })
+    let i = 0;
+    while (i < products.length) {
+      await client.index({
+        index: "ebay",
+        document: {
+          product: products[i],
+          price: prices[i],
+          category: category[i],
+        },
+      });
+      i++;
+    }
 
-		// Let's search!
-		// const result= await client.search({
-		// 		index: 'ebay',
-		// 		query: { match: { product: 'soap' }}
-		// })
+    await client.indices.refresh({ index: "ebay" });
+
+    // Let's search!
+    // const result= await client.search({
+    // 		index: 'ebay',
+    // 		query: { match: { product: 'soap' }}
+    // })
 
     // const result = await client.search({
     //     index: 'ebay',
@@ -225,75 +206,71 @@ app.get('/es', (req, res) => {
     // })
 
     const result = await client.search({
-        index: 'ebay',
-        query: {
-            dis_max: {
-              queries: [
-                {
-                  match: {
-                    product: 'soap'
-                  }
-                },
-                {
-                  match: {
-                    category: 'c2'
-                  }
-                }
-              ],
-              tie_breaker: 0.3
-            }
-        }
-    })
+      index: "ebay",
+      query: {
+        dis_max: {
+          queries: [
+            {
+              match: {
+                product: "soap",
+              },
+            },
+            {
+              match: {
+                category: "c2",
+              },
+            },
+          ],
+          tie_breaker: 0.3,
+        },
+      },
+    });
 
+    console.log(result.hits.hits);
+    const log_st_qu = result.hits.hits[0]["_source"]["product"];
+    const log_st_cha = result.hits.hits[0]["_source"]["price"];
+    res.send(log_st_qu + log_st_cha);
+  }
 
-		console.log(result.hits.hits);
-		const log_st_qu = result.hits.hits[0]['_source']['product'];
-		const log_st_cha = result.hits.hits[0]['_source']['price'];
-		res.send(log_st_qu + log_st_cha);
-}
-
-run();
-
+  run();
 });
 
 // must search
 
-
-    // const response = await client.search({
-    //     index: 'ebay',
-    //     query: {
-    //       bool: {
-    //         must: {
-    //           match_all: {}
-    //         },
-    //         filter: {
-    //           term: {
-    //             status: 'active'
-    //           }
-    //         }
-    //       }
-    //     }
-    // })
-
+// const response = await client.search({
+//     index: 'ebay',
+//     query: {
+//       bool: {
+//         must: {
+//           match_all: {}
+//         },
+//         filter: {
+//           term: {
+//             status: 'active'
+//           }
+//         }
+//       }
+//     }
+// })
 
 // multiple condition search
-    // const result = await client.search({
-    //     index: 'ebay',
-    //     query: {
-    //         dis_max: {
-    //           queries: [
-    //             {
-    //               match: {
-    //                 product: 'soap'
-    //               }
-    //             },
-    //             {
-    //               match: {
-    //                 category: 'c1'
-    //               }
-    //             }
-    //           ],
-    //           tie_breaker: 0.3
-    //         }
-    //     }
-    // })
+// const result = await client.search({
+//     index: 'ebay',
+//     query: {
+//         dis_max: {
+//           queries: [
+//             {
+//               match: {
+//                 product: 'soap'
+//               }
+//             },
+//             {
+//               match: {
+//                 category: 'c1'
+//               }
+//             }
+//           ],
+//           tie_breaker: 0.3
+//         }
+//     }
+// })
