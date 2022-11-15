@@ -24,7 +24,7 @@ app.get("/search_all", (req, res) => {
       {
         index: "ebay",
         size: 25,
-        from: Math.floor(Math.random() * 100),
+        from: 0, //Math.floor(Math.random() * 100),
         query: {
           match_all: {},
         },

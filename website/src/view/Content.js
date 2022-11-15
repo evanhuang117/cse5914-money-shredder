@@ -28,7 +28,6 @@ class Content extends React.Component {
     });
     this.getItems();
     event.preventDefault();
-    this.componentDidMount();
   }
 
   handleChange(event) {
