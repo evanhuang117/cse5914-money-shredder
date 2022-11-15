@@ -26,14 +26,9 @@ class Content extends React.Component {
       showTable: "block",
       [name]: value,
     });
-    axios
-      .get("http://localhost:7001/search_all", {
-        params: {},
-      })
-      .then((data) => {
-        const data_ = JSON.parse(JSON.stringify(data.data.hits.hits));
-        console.log("data_ = ", data_);
-      });
+    this.getItems();
+    event.preventDefault();
+    this.componentDidMount();
   }
 
   handleChange(event) {
