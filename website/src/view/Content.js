@@ -53,6 +53,34 @@ class Content extends React.Component {
         items: data_,
       });
     });
+
+    // axios.post("http://localhost:7001/search_by_keyword", {
+    //     keyword: 'Taco'}).then((data)=>{
+    //   // console.log(data);
+    //   const data_ = JSON.parse(JSON.stringify(data.data.hits.hits));
+    //   this.setState({
+    //     items: data_,
+    //   });
+    // })
+    // .catch((e) => {
+    //   console.log(e);
+    //   alert("search_by_keyword failed", e);
+    // });
+
+    // axios.post("http://localhost:7001/search_by_price", {
+    //     gte: 10,
+    //     lte: 1000 }).then((data)=>{
+    //   // console.log(data);
+    //   const data_ = JSON.parse(JSON.stringify(data.data.hits.hits));
+    //   this.setState({
+    //     items: data_,
+    //   });
+    // })
+    // .catch((e) => {
+    //   console.log(e);
+    //   alert("search_by_price failed", e);
+    // });
+
   }
 
   getItems() {
