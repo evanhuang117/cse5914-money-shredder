@@ -30,6 +30,8 @@ services:
       - 80:80
     networks:
       - money-net
+    depends_on:
+      - backend
 
   backend:
     container_name: backend

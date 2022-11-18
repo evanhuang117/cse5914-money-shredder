@@ -4,18 +4,22 @@ import axios from "axios";
 import fakeData from "../fake_data.json";
 import "../style/Content.css";
 class Content extends React.Component {
+
+
   constructor(props) {
     super(props);
     this.state = {
+      fullLists: null,
       items: null,
       // queued : "",
       budget: "",
-      showTable: "none",
+      showTable: 'none'
     };
-
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
+
+
 
   handleSubmit(event) {
     const target = event.target;
@@ -27,30 +31,26 @@ class Content extends React.Component {
     });
     this.getItems();
     event.preventDefault();
-    console.log("gang");
-    axios
-      .get("http://localhost:7001/search_all", {
-        params: {},
-      })
-      .then((data) => {
-        const data_ = JSON.parse(JSON.stringify(data.data.hits.hits));
-        console.log("data_ = ", data_);
-      });
   }
+
   handleChange(event) {
     const target = event.target;
     const value = target.value;
     const name = target.name;
     this.setState({
-      [name]: value,
+      [name]: value
     });
     // alert(String(this.state.budget))
   }
+
   componentDidMount() {
-    axios.get("http://localhost:7001/search_all").then((data) => {
-      const data_ = JSON.parse(JSON.stringify(data.data.hits.hits));
-      this.setState({
-        items: data_,
+    axios.get("http://localhost:7001/search_all")
+      .then((data) => {
+        const data_ = JSON.parse(JSON.stringify(data.data.hits.hits));
+        this.setState({
+          fullLists: data_,
+          items: data_
+        });
       });
     });
 
@@ -109,13 +109,43 @@ class Content extends React.Component {
     }
     if (rows == null) return <tr></tr>;
     return rows;
+=======
+  }
+
+  getItems() {
+    var rowData = this.state.fullLists;
+    var data = rowData.filter((data) => (data._source.price.amount / data._source.price.divisor) < parseInt(this.state.budget));
+    this.setState({
+      items: data
+    });
+    //   return (
+    //   <div className="row mb-2">
+    //   {this.state.items.map((item)=>(
+    //     <div className="col ">
+    //     <div className="card rounded-4" style={{ width: "auto" }}>
+    //       <img
+    //         className="card-img-top img-top"
+    //         src={item._source.images[0].url}
+    //         alt="Card image cap"
+    //       />
+    //       <div className="card-body">
+    //         <h5 className="card-title">{item._source.title}</h5>
+    //         <p className="card-text">{item._source.description}</p>
+    //         <a className="btn btn-primary">{item._index}</a>
+    //       </div>
+    //     </div>
+    //   </div>
+    //   ))}
+    // </div>)
+>>>>>>> 455b621e7e2524f86d754d02d13530ab3e6d8ff5
   }
 
   render() {
-    if (this.state.items == null) {
-      return <h1> Loading</h1>;
+    if (this.state.fullLists == null) {
+      return (<h1> Loading </h1>)
     } else {
       return (
+
         <div className="content">
           {/*SEARCH BAR*/}
           <div className="container mb-3 mt-3">
@@ -169,92 +199,31 @@ class Content extends React.Component {
                   <Filter label="Stars" />
                 </ul>
               </div>
+              {/* Results */}
               <div className="col-9">
-                {/* Results */}
-                <div className="row mb-3">
-                  <div className="col ">
-                    <div className="card rounded-4" style={{ width: "auto" }}>
-                      <img
-                        className="card-img-top img-top"
-                        src={require("../img/coffee.jpeg")}
-                        alt="Card image cap"
-                      />
-                      <div className="card-body">
-                        <h5 className="card-title">Product Name</h5>
-                        <p className="card-text">Description</p>
-                        <a className="btn btn-primary">Amazon</a>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col ">
-                    <div className="card rounded-4" style={{ width: "auto" }}>
-                      <img
-                        className="card-img-top img-top"
-                        src={require("../img/coffee.jpeg")}
-                        alt="Card image cap"
-                      />
-                      <div className="card-body">
-                        <h5 className="card-title">Product Name</h5>
-                        <p className="card-text">Description</p>
-                        <a className="btn btn-primary">Amazon</a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
                 <div className="row mb-2">
-                  <div className="col ">
-                    <div className="card rounded-4" style={{ width: "auto" }}>
-                      <img
-                        className="card-img-top img-top"
-                        src={require("../img/coffee.jpeg")}
-                        alt="Card image cap"
-                      />
-                      <div className="card-body">
-                        <h5 className="card-title">Product Name</h5>
-                        <p className="card-text">Description</p>
-                        <a className="btn btn-primary">Amazon</a>
+                  {this.state.items.map((item) => (
+                    <div className="col ">
+                      <div className="card rounded-4" style={{ width: "auto" }}>
+                        <img
+                          className="card-img-top img-top"
+                          src={item._source.images[0].url}
+                          alt="Card image cap"
+                        />
+                        <div className="card-body">
+                          <h5 className="card-title">{item._source.title}</h5>
+                          <p className="card-text">{item._source.description}</p>
+                          <a className="btn btn-primary">{item._index}</a>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="col ">
-                    <div className="card rounded-4" style={{ width: "auto" }}>
-                      <img
-                        className="card-img-top img-top"
-                        src={require("../img/coffee.jpeg")}
-                        alt="Card image cap"
-                      />
-                      <div className="card-body">
-                        <h5 className="card-title">Product Name</h5>
-                        <p className="card-text">Description</p>
-                        <a className="btn btn-primary">Amazon</a>
-                      </div>
-                    </div>
-                  </div>
+                  ))}
                 </div>
-              </div>
-            </div>
-          </div>
-          {/*RESULTS AT THE END */}
-          <div
-            class="container ps-4 mt-5"
-            style={{ display: this.state.showTable }}
-          >
-            <div class="row" id="mainListContainer">
-              <div class="col-md-8 table-responsive">
-                <table class="table table-striped">
-                  <thead>
-                    <tr>
-                      <th scope="col">Rank</th>
-                      <th scope="col">Name</th>
-                      <th scope="col">Price</th>
-                    </tr>
-                  </thead>
-                  <tbody>{this.getItems()}</tbody>
-                </table>
               </div>
             </div>
           </div>
         </div>
+
       );
     }
   }
