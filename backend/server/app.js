@@ -22,12 +22,11 @@ app.get("/search_all", (req, res) => {
   async function run() {
     const result = await client.search(
       {
-        index: "etsy",
-        from: 0,
-        body: {
-          query: {
-            match_all: {},
-          },
+        index: "ebay",
+        size: 25,
+        from: 0, //Math.floor(Math.random() * 100),
+        query: {
+          match_all: {},
         },
       },
       {
