@@ -23,12 +23,19 @@ app.get("/search_all", (req, res) => {
     const result = await client.search(
       {
         index: "ebay",
+<<<<<<< HEAD
         from: 0,
         body: {
           size: 5,
           query: {
             match_all: {},
           },
+=======
+        size: 25,
+        from: 0, //Math.floor(Math.random() * 100),
+        query: {
+          match_all: {},
+>>>>>>> fb8f1e222de3ce1ff02d82c81265b5b01362da85
         },
       },
       {
