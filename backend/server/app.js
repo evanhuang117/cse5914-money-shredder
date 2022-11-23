@@ -2,7 +2,7 @@
 
 const express = require("express");
 const app = express();
-const port = 7002;
+const port = 7001;
 
 const cors = require("cors");
 
@@ -15,27 +15,20 @@ app.listen(port, () => {
 ("use strict");
 
 const { Client } = require("@elastic/elasticsearch");
-// const client = new Client({ node: "http://elasticsearch:9200/" });
-const client = new Client({ node: "http://0.0.0.0:9200/" });
+const client = new Client({ node: "http://elasticsearch:9200/" });
+// const client = new Client({ node: "http://0.0.0.0:9200/" });
 
 app.get("/search_all", (req, res) => {
   async function run() {
     const result = await client.search(
       {
         index: "ebay",
-<<<<<<< HEAD
         from: 0,
         body: {
           size: 5,
           query: {
             match_all: {},
           },
-=======
-        size: 25,
-        from: 0, //Math.floor(Math.random() * 100),
-        query: {
-          match_all: {},
->>>>>>> fb8f1e222de3ce1ff02d82c81265b5b01362da85
         },
       },
       {
@@ -51,13 +44,10 @@ app.get("/search_all", (req, res) => {
   run();
 });
 
-// app.post("/search_by_price", (req, res) => {
-app.get("/search_by_price", (req, res) => {
+app.post("/search_by_price", (req, res) => {
   // var price = req.body.price;
-  // var gte = req.body.gte;
-  // var lte = req.body.lte;
-  gte = 10;
-  lte = 1000;
+  var gte = req.body.gte;
+  var lte = req.body.lte;
 
   console.log('gte = ', gte, 'lte = ', lte);
   async function run() {
@@ -66,7 +56,6 @@ app.get("/search_by_price", (req, res) => {
         index: "ebay",
         from: 0,
         body: {
-          size: 20,
           query: {
             range: {
               price: {
@@ -94,11 +83,12 @@ app.get("/search_by_price", (req, res) => {
   run();
 });
 
-app.post("/search_by_keyword", (req, res) => {
-  var keyword = req.body.keyword;
+// app.post("/search_by_keyword", (req, res) => {
+app.get("/search_by_keyword", (req, res) => {
+  // var keyword = req.body.keyword;
+  var keyword = 'Taco';
   console.log('keyword = ', keyword);
-  // var keyword = 'Taco';
-
+// 
   async function run() {
     const result = await client.search(
       {
