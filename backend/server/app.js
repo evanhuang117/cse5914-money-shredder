@@ -2,7 +2,7 @@
 
 const express = require("express");
 const app = express();
-const port = 7002;
+const port = 7001;
 
 const cors = require("cors");
 
@@ -15,8 +15,8 @@ app.listen(port, () => {
 ("use strict");
 
 const { Client } = require("@elastic/elasticsearch");
-// const client = new Client({ node: "http://elasticsearch:9200/" });
-const client = new Client({ node: "http://0.0.0.0:9200/" });
+const client = new Client({ node: "http://elasticsearch:9200/" });
+// const client = new Client({ node: "http://0.0.0.0:9200/" });
 
 app.get("/search_all", (req, res) => {
   async function run() {
@@ -44,13 +44,12 @@ app.get("/search_all", (req, res) => {
   run();
 });
 
-// app.post("/search_by_price", (req, res) => {
-app.get("/search_by_price", (req, res) => {
+app.post("/search_by_price", (req, res) => {
   // var price = req.body.price;
-  // var gte = req.body.gte;
-  // var lte = req.body.lte;
-  gte = 10;
-  lte = 1000;
+  var gte = req.body.gte;
+  var lte = req.body.lte;
+  // var gte = 100;
+  // var lte = 1000000;
 
   console.log('gte = ', gte, 'lte = ', lte);
   async function run() {
@@ -59,7 +58,6 @@ app.get("/search_by_price", (req, res) => {
         index: "ebay",
         from: 0,
         body: {
-          size: 20,
           query: {
             range: {
               price: {
@@ -87,11 +85,12 @@ app.get("/search_by_price", (req, res) => {
   run();
 });
 
+// app.post("/search_by_keyword", (req, res) => {
 app.post("/search_by_keyword", (req, res) => {
   var keyword = req.body.keyword;
-  console.log('keyword = ', keyword);
   // var keyword = 'Taco';
-
+  // console.log('keyword = ', keyword);
+// 
   async function run() {
     const result = await client.search(
       {
