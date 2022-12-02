@@ -22,11 +22,26 @@ class Content extends React.Component {
     const target = event.target;
     const value = target.value;
     const name = target.name;
+    console.log('target = ', target);
+    console.log('value = ', value);
+    axios.post("http://localhost:7001/search_by_keyword", {
+            keyword: 'taco'
+        }).then((data) => {
+          const data_ = JSON.parse(JSON.stringify(data.data.hits.hits));
+          this.setState({
+            fullLists: data_,
+            items: data_
+          });
+        })
+        .catch((e) => {
+          console.log(e);
+          alert("failed", e);
+        });
+    
     this.setState({
       showTable: "block",
       [name]: value,
     });
-    this.getItems();
     event.preventDefault();
   }
 
@@ -34,6 +49,20 @@ class Content extends React.Component {
     const target = event.target;
     const value = target.value;
     const name = target.name;
+    axios.post("http://localhost:7001/search_by_price", {
+            gte: value,
+            lte: value + 1000
+        }).then((data) => {
+          const data_ = JSON.parse(JSON.stringify(data.data.hits.hits));
+          this.setState({
+            fullLists: data_,
+            items: data_
+          });
+        })
+        .catch((e) => {
+          console.log(e);
+          alert("failed", e);
+        });
     this.setState({
       [name]: value,
     });
@@ -50,35 +79,33 @@ class Content extends React.Component {
     });
   }
 
-  getItems() {
-    var rowData = this.state.fullLists;
-    var data = rowData.filter(
-      (data) =>
-        parseFloat(data._source.price.value) < parseInt(this.state.budget)
-    );
-    this.setState({
-      items: data,
-    });
-    //   return (
-    //   <div className="row mb-2">
-    //   {this.state.items.map((item)=>(
-    //     <div className="col ">
-    //     <div className="card rounded-4" style={{ width: "auto" }}>
-    //       <img
-    //         className="card-img-top img-top"
-    //         src={item._source.images[0].url}
-    //         alt="Card image cap"
-    //       />
-    //       <div className="card-body">
-    //         <h5 className="card-title">{item._source.title}</h5>
-    //         <p className="card-text">{item._source.description}</p>
-    //         <a className="btn btn-primary">{item._index}</a>
-    //       </div>
-    //     </div>
-    //   </div>
-    //   ))}
-    // </div>)
-  }
+  // getItems() {
+  //   var rowData = this.state.fullLists;
+  //   var data = rowData.filter((data) => (data._source.price.amount / data._source.price.divisor) < parseInt(this.state.budget));
+  //   this.setState({
+  //     items: data
+  //   });
+  //   console.log(data);
+  //   //   return (
+  //   //   <div className="row mb-2">
+  //   //   {this.state.items.map((item)=>(
+  //   //     <div className="col ">
+  //   //     <div className="card rounded-4" style={{ width: "auto" }}>
+  //   //       <img
+  //   //         className="card-img-top img-top"
+  //   //         src={item._source.images[0].url}
+  //   //         alt="Card image cap"
+  //   //       />
+  //   //       <div className="card-body">
+  //   //         <h5 className="card-title">{item._source.title}</h5>
+  //   //         <p className="card-text">{item._source.description}</p>
+  //   //         <a className="btn btn-primary">{item._index}</a>
+  //   //       </div>
+  //   //     </div>
+  //   //   </div>
+  //   //   ))}
+  //   // </div>)
+  // }
 
   render() {
     if (this.state.fullLists == null) {
