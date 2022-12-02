@@ -51,7 +51,7 @@ app.post("/search_by_price", (req, res) => {
   // var gte = 100;
   // var lte = 1000000;
 
-  console.log('gte = ', gte, 'lte = ', lte);
+  // console.log('gte = ', gte, 'lte = ', lte);
   async function run() {
     const result = await client.search(
       {
@@ -89,7 +89,7 @@ app.post("/search_by_price", (req, res) => {
 app.post("/search_by_keyword", (req, res) => {
   var keyword = req.body.keyword;
   // var keyword = 'Taco';
-  // console.log('keyword = ', keyword);
+  console.log('keyword = ', keyword);
 // 
   async function run() {
     const result = await client.search(
